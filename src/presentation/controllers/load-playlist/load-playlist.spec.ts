@@ -92,4 +92,20 @@ describe('Load Playlist Controller', () => {
 
     expect(loadSpy).toHaveBeenCalledWith(cityTemperature)
   })
+
+  test('should return 500 if MusicProvider throws', () => {
+    const { sut, musicProviderStub } = makeSut()
+    jest.spyOn(musicProviderStub, 'load').mockImplementationOnce(() => {
+      throw new Error()
+    })
+
+    const httpRequest = {
+      param: {
+        city_name: 'any_city'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
+  })
 })
