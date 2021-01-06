@@ -38,6 +38,18 @@ const makeSut = (): SutTypes => {
 }
 
 describe('Load Playlist Controller', () => {
+  test('should return 200 if valid data is provided', () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      param: {
+        city_name: 'any_city'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual(['any_music'])
+  })
+
   test('should return 400 if no city name is provided', () => {
     const { sut } = makeSut()
     const httpRequest = {
