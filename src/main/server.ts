@@ -1,5 +1,7 @@
+import 'dotenv/config'
 import app from './config/app'
+import env from './config/env'
 
-app.listen(3003, () => {
-  console.info('Server running at http://localhost:3003')
+app.listen(env.port, () => {
+  console.info(`Server running at http://localhost:${env.port}`)
 })
