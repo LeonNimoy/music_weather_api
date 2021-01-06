@@ -1,9 +1,13 @@
 import { LoadPlayListController } from './load-playlist'
 import { MissingParamError } from '../errors/missing-param-erro'
 
+const makeSut = (): LoadPlayListController => {
+  return new LoadPlayListController()
+}
+
 describe('Load Playlist Controller', () => {
   test('should return 400 if no city name is provided', () => {
-    const sut = new LoadPlayListController()
+    const sut = makeSut()
     const httpRequest = {
       param: {
       }
