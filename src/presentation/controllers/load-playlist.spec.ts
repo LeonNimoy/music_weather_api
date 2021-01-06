@@ -1,10 +1,12 @@
 import { LoadPlayListController } from './load-playlist'
 import { MissingParamError, ServerError } from '../errors'
 import { WeatherProvider } from '../protocols/weather-provider'
+import { MusicProvider } from '../protocols/music-provider'
 
 interface SutTypes {
   sut: LoadPlayListController
   weatherProviderStub: WeatherProvider
+  musicProviderStub: MusicProvider
 }
 
 const makeWeatherProvider = (): WeatherProvider => {
@@ -16,12 +18,23 @@ const makeWeatherProvider = (): WeatherProvider => {
   return new WeatherProviderStub()
 }
 
+const makeMusicProvider = (): MusicProvider => {
+  class MusicProviderStub implements MusicProvider {
+    load (temperature: number): string[] {
+      return ['any_music']
+    }
+  }
+  return new MusicProviderStub()
+}
+
 const makeSut = (): SutTypes => {
   const weatherProviderStub = makeWeatherProvider()
-  const sut = new LoadPlayListController(weatherProviderStub)
+  const musicProviderStub = makeMusicProvider()
+  const sut = new LoadPlayListController(weatherProviderStub, musicProviderStub)
   return {
     sut,
-    weatherProviderStub
+    weatherProviderStub,
+    musicProviderStub
   }
 }
 
@@ -63,5 +76,21 @@ describe('Load Playlist Controller', () => {
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
+  })
+
+  test('should call MusicProvider with correct temperature param', () => {
+    const { sut, musicProviderStub, weatherProviderStub } = makeSut()
+    const loadSpy = jest.spyOn(musicProviderStub, 'load')
+    const httpRequest = {
+      param: {
+        city_name: 'any_city'
+      }
+    }
+
+    sut.handle(httpRequest)
+
+    const cityTemperature = weatherProviderStub.load(httpRequest.param.city_name)
+
+    expect(loadSpy).toHaveBeenCalledWith(cityTemperature)
   })
 })
