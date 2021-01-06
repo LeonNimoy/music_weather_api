@@ -19,7 +19,11 @@ export class LoadPlayListController implements Controller {
 
       const cityTemperature = this.weatherProvider.load(httpRequest.param.city_name)
 
-      this.musicProvider.load(cityTemperature)
+      const playlist = this.musicProvider.load(cityTemperature)
+      return {
+        statusCode: 200,
+        body: playlist
+      }
     } catch (error) {
       return serverError()
     }
