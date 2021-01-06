@@ -1,3 +1,3 @@
 export interface WeatherProvider {
-  load: (city: string) => number
+  load: (city: string) => Promise<number>
 }

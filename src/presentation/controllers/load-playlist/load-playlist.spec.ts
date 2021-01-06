@@ -10,7 +10,7 @@ interface SutTypes {
 
 const makeWeatherProvider = (): WeatherProvider => {
   class WeatherProviderStub implements WeatherProvider {
-    load (city: string): number {
+    async load (city: string): Promise<number> {
       return 1
     }
   }
@@ -19,7 +19,7 @@ const makeWeatherProvider = (): WeatherProvider => {
 
 const makeMusicProvider = (): MusicProvider => {
   class MusicProviderStub implements MusicProvider {
-    load (temperature: number): string[] {
+    async load (temperature: number): Promise<string[]> {
       return ['any_music']
     }
   }
@@ -38,30 +38,30 @@ const makeSut = (): SutTypes => {
 }
 
 describe('Load Playlist Controller', () => {
-  test('should return 200 if valid data is provided', () => {
+  test('should return 200 if valid data is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       param: {
         city_name: 'any_city'
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).toEqual(['any_music'])
   })
 
-  test('should return 400 if no city name is provided', () => {
+  test('should return 400 if no city name is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       param: {
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingParamError('city_name'))
   })
 
-  test('should call WeatherProvider with correct city param', () => {
+  test('should call WeatherProvider with correct city param', async () => {
     const { sut, weatherProviderStub } = makeSut()
     const loadSpy = jest.spyOn(weatherProviderStub, 'load')
     const httpRequest = {
@@ -69,14 +69,14 @@ describe('Load Playlist Controller', () => {
         city_name: 'any_city'
       }
     }
-    sut.handle(httpRequest)
+    await sut.handle(httpRequest)
     expect(loadSpy).toHaveBeenCalledWith('any_city')
   })
 
-  test('should return 500 if WeatherProvider throws', () => {
+  test('should return 500 if WeatherProvider throws', async () => {
     const { sut, weatherProviderStub } = makeSut()
-    jest.spyOn(weatherProviderStub, 'load').mockImplementationOnce(() => {
-      throw new Error()
+    jest.spyOn(weatherProviderStub, 'load').mockImplementationOnce(async () => {
+      return await new Promise((resolve, reject) => reject(new Error()))
     })
 
     const httpRequest = {
@@ -84,12 +84,12 @@ describe('Load Playlist Controller', () => {
         city_name: 'any_city'
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
   })
 
-  test('should call MusicProvider with correct temperature param', () => {
+  test('should call MusicProvider with correct temperature param', async () => {
     const { sut, musicProviderStub, weatherProviderStub } = makeSut()
     const loadSpy = jest.spyOn(musicProviderStub, 'load')
     const httpRequest = {
@@ -98,17 +98,17 @@ describe('Load Playlist Controller', () => {
       }
     }
 
-    sut.handle(httpRequest)
+    await sut.handle(httpRequest)
 
-    const cityTemperature = weatherProviderStub.load(httpRequest.param.city_name)
+    const cityTemperature = await weatherProviderStub.load(httpRequest.param.city_name)
 
     expect(loadSpy).toHaveBeenCalledWith(cityTemperature)
   })
 
-  test('should return 500 if MusicProvider throws', () => {
+  test('should return 500 if MusicProvider throws', async () => {
     const { sut, musicProviderStub } = makeSut()
-    jest.spyOn(musicProviderStub, 'load').mockImplementationOnce(() => {
-      throw new Error()
+    jest.spyOn(musicProviderStub, 'load').mockImplementationOnce(async () => {
+      return await new Promise((resolve, reject) => reject(new Error()))
     })
 
     const httpRequest = {
@@ -116,7 +116,7 @@ describe('Load Playlist Controller', () => {
         city_name: 'any_city'
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(500)
     expect(httpResponse.body).toEqual(new ServerError())
   })

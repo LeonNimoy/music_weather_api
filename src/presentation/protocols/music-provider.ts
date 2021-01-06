@@ -1,3 +1,3 @@
 export interface MusicProvider {
-  load: (temperature: number) => string[]
+  load: (temperature: number) => Promise<string[]>
 }

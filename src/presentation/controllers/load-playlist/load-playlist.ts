@@ -11,15 +11,15 @@ export class LoadPlayListController implements Controller {
     this.musicProvider = musicProvider
   }
 
-  handle (httpRequest: HttpRequest): HttpResponse {
+  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       if (!httpRequest.param.city_name) {
         return badRequest(new MissingParamError('city_name'))
       }
 
-      const cityTemperature = this.weatherProvider.load(httpRequest.param.city_name)
+      const cityTemperature = await this.weatherProvider.load(httpRequest.param.city_name)
 
-      const playlist = this.musicProvider.load(cityTemperature)
+      const playlist = await this.musicProvider.load(cityTemperature)
 
       return ok(playlist)
     } catch (error) {
