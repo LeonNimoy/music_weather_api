@@ -23,6 +23,7 @@ export class LoadPlayListController implements Controller {
 
       return ok(playlist)
     } catch (error) {
+      console.error(error)
       return serverError()
     }
   }
