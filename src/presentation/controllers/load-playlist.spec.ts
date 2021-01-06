@@ -15,14 +15,6 @@ const makeWeatherProvider = (): WeatherProvider => {
   }
   return new WeatherProviderStub()
 }
-const makeWeatherProviderWithError = (): WeatherProvider => {
-  class WeatherProviderStub implements WeatherProvider {
-    load (city: string): number {
-      throw new Error()
-    }
-  }
-  return new WeatherProviderStub()
-}
 
 const makeSut = (): SutTypes => {
   const weatherProviderStub = makeWeatherProvider()
@@ -58,9 +50,10 @@ describe('Load Playlist Controller', () => {
   })
 
   test('should return 500 if WeatherProvider throws', () => {
-    const weatherProviderStub = makeWeatherProviderWithError()
-
-    const sut = new LoadPlayListController(weatherProviderStub)
+    const { sut, weatherProviderStub } = makeSut()
+    jest.spyOn(weatherProviderStub, 'load').mockImplementationOnce(() => {
+      throw new Error()
+    })
 
     const httpRequest = {
       param: {
