@@ -1,6 +1,6 @@
 import { Controller, HttpRequest, HttpResponse, MusicProvider, WeatherProvider } from './load-playlist-protocols'
 import { MissingParamError } from '../../errors'
-import { badRequest, serverError } from '../../helpers/http-helper'
+import { badRequest, serverError, ok } from '../../helpers/http-helper'
 
 export class LoadPlayListController implements Controller {
   private readonly weatherProvider: WeatherProvider
@@ -20,10 +20,8 @@ export class LoadPlayListController implements Controller {
       const cityTemperature = this.weatherProvider.load(httpRequest.param.city_name)
 
       const playlist = this.musicProvider.load(cityTemperature)
-      return {
-        statusCode: 200,
-        body: playlist
-      }
+
+      return ok(playlist)
     } catch (error) {
       return serverError()
     }
