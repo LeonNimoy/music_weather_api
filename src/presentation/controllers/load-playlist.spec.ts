@@ -4,7 +4,7 @@ describe('Load Playlist Controller', () => {
   test('should return 400 if no city name is provided', () => {
     const sut = new LoadPlayListController()
     const httpRequest = {
-      body: {
+      params: {
       }
     }
     const httpResponse = sut.handle(httpRequest)
