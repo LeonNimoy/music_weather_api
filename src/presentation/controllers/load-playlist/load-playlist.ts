@@ -1,8 +1,6 @@
-import { Controller, HttpRequest, HttpResponse } from '../protocols'
-import { MissingParamError } from '../errors'
-import { badRequest, serverError } from '../helpers/http-helper'
-import { WeatherProvider } from '../protocols/weather-provider'
-import { MusicProvider } from '../protocols/music-provider'
+import { Controller, HttpRequest, HttpResponse, MusicProvider, WeatherProvider } from './load-playlist-protocols'
+import { MissingParamError } from '../../errors'
+import { badRequest, serverError } from '../../helpers/http-helper'
 
 export class LoadPlayListController implements Controller {
   private readonly weatherProvider: WeatherProvider
