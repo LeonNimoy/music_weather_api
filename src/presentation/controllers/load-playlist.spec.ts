@@ -1,7 +1,6 @@
 import { LoadPlayListController } from './load-playlist'
-import { MissingParamError } from '../errors/missing-param-erro'
+import { MissingParamError, ServerError } from '../errors'
 import { WeatherProvider } from '../protocols/weather-provider'
-import { ServerError } from '../errors/server-error'
 
 interface SutTypes {
   sut: LoadPlayListController
