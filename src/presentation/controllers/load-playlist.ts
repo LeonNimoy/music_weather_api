@@ -1,8 +1,12 @@
+import { HttpRequest, HttpResponse } from '../protocols/http'
+
 export class LoadPlayListController {
-  handle (httpRequest: any): any {
-    return {
-      statusCode: 400,
-      body: new Error('Missing param: city_name')
+  handle (httpRequest: HttpRequest): HttpResponse {
+    if (!httpRequest.params.city_name) {
+      return {
+        statusCode: 400,
+        body: new Error('Missing param: city_name')
+      }
     }
   }
 }
