@@ -7,14 +7,25 @@ interface SutTypes {
   weatherProviderStub: WeatherProvider
 }
 
-const makeSut = (): SutTypes => {
+const makeWeatherProvider = (): WeatherProvider => {
   class WeatherProviderStub implements WeatherProvider {
     load (city: string): number {
       return 1
     }
   }
-  const weatherProviderStub = new WeatherProviderStub()
+  return new WeatherProviderStub()
+}
+const makeWeatherProviderWithError = (): WeatherProvider => {
+  class WeatherProviderStub implements WeatherProvider {
+    load (city: string): number {
+      throw new Error()
+    }
+  }
+  return new WeatherProviderStub()
+}
 
+const makeSut = (): SutTypes => {
+  const weatherProviderStub = makeWeatherProvider()
   const sut = new LoadPlayListController(weatherProviderStub)
   return {
     sut,
@@ -47,12 +58,7 @@ describe('Load Playlist Controller', () => {
   })
 
   test('should return 500 if WeatherProvider throws', () => {
-    class WeatherProviderStub implements WeatherProvider {
-      load (city: string): number {
-        throw new Error()
-      }
-    }
-    const weatherProviderStub = new WeatherProviderStub()
+    const weatherProviderStub = makeWeatherProviderWithError()
 
     const sut = new LoadPlayListController(weatherProviderStub)
 
