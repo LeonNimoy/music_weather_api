@@ -1,3 +1,4 @@
 export interface WeatherProvider {
-  load: (city: string) => Promise<number>
+  loadUsingCity: (city: string) => Promise<number>
+  loadUsingGeographicalCoordinates: (lat: string, long: string) => Promise<number>
 }

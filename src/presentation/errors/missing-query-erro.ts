@@ -1,6 +1,6 @@
 export class MissingQueryError extends Error {
-  constructor (queryName: string) {
-    super(`Missing Query: ${queryName}`)
+  constructor () {
+    super('Missing city or Geographical coordinates')
     this.name = 'MissingQueryError'
   }
 }

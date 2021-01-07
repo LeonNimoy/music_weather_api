@@ -13,15 +13,23 @@ export class LoadPlayListController implements Controller {
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      if (!httpRequest.query.city_name) {
-        return badRequest(new MissingQueryError('city_name'))
+      const { city, lat, long } = httpRequest.query
+
+      if (!city && !(lat && long)) {
+        return badRequest(new MissingQueryError())
       }
 
-      const cityTemperature = await this.weatherProvider.load(httpRequest.query.city_name)
+      if (city) {
+        const cityTemperature = await this.weatherProvider.loadUsingCity(city)
+        const playlist = await this.musicProvider.load(cityTemperature)
+        return ok(playlist)
+      }
 
-      const playlist = await this.musicProvider.load(cityTemperature)
-
-      return ok(playlist)
+      if (lat && long) {
+        const cityTemperature = await this.weatherProvider.loadUsingGeographicalCoordinates(lat, long)
+        const playlist = await this.musicProvider.load(cityTemperature)
+        return ok(playlist)
+      }
     } catch (error) {
       console.error(error)
       return serverError()
