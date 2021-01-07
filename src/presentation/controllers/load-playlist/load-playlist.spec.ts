@@ -78,6 +78,17 @@ describe('Load Playlist Controller', () => {
     expect(httpResponse.body).toEqual(new MissingQueryError())
   })
 
+  test('should return 400 if no geographical coordinates are provided', async () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      query: {
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body).toEqual(new MissingQueryError())
+  })
+
   test('should call WeatherProvider with correct city query', async () => {
     const { sut, weatherProviderStub } = makeSut()
     const loadSpy = jest.spyOn(weatherProviderStub, 'loadUsingCity')
@@ -90,7 +101,20 @@ describe('Load Playlist Controller', () => {
     expect(loadSpy).toHaveBeenCalledWith('any_city')
   })
 
-  test('should return 500 if WeatherProvider throws', async () => {
+  test('should call WeatherProvider with the correct geographical coordinates query', async () => {
+    const { sut, weatherProviderStub } = makeSut()
+    const loadSpy = jest.spyOn(weatherProviderStub, 'loadUsingGeographicalCoordinates')
+    const httpRequest = {
+      query: {
+        lat: '123',
+        long: '456'
+      }
+    }
+    await sut.handle(httpRequest)
+    expect(loadSpy).toHaveBeenCalledWith('123', '456')
+  })
+
+  test('should return 500 if WeatherProvider, receives a city but throws', async () => {
     const { sut, weatherProviderStub } = makeSut()
     jest.spyOn(weatherProviderStub, 'loadUsingCity').mockImplementationOnce(async () => {
       return await new Promise((resolve, reject) => reject(new Error()))
@@ -99,6 +123,23 @@ describe('Load Playlist Controller', () => {
     const httpRequest = {
       query: {
         city: 'any_city'
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new ServerError())
+  })
+
+  test('should return 500 if WeatherProvider, receives geographical coordinates but throws', async () => {
+    const { sut, weatherProviderStub } = makeSut()
+    jest.spyOn(weatherProviderStub, 'loadUsingGeographicalCoordinates').mockImplementationOnce(async () => {
+      return await new Promise((resolve, reject) => reject(new Error()))
+    })
+
+    const httpRequest = {
+      query: {
+        lat: '123',
+        long: '456'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
