@@ -1,5 +1,5 @@
 import { LoadPlayListController } from './load-playlist'
-import { MissingParamError, ServerError } from '../../errors'
+import { MissingQueryError, ServerError } from '../../errors'
 import { WeatherProvider, MusicProvider } from './load-playlist-protocols'
 
 interface SutTypes {
@@ -41,7 +41,7 @@ describe('Load Playlist Controller', () => {
   test('should return 200 if valid data is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
-      param: {
+      query: {
         city_name: 'any_city'
       }
     }
@@ -53,19 +53,19 @@ describe('Load Playlist Controller', () => {
   test('should return 400 if no city name is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
-      param: {
+      query: {
       }
     }
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new MissingParamError('city_name'))
+    expect(httpResponse.body).toEqual(new MissingQueryError('city_name'))
   })
 
-  test('should call WeatherProvider with correct city param', async () => {
+  test('should call WeatherProvider with correct city query', async () => {
     const { sut, weatherProviderStub } = makeSut()
     const loadSpy = jest.spyOn(weatherProviderStub, 'load')
     const httpRequest = {
-      param: {
+      query: {
         city_name: 'any_city'
       }
     }
@@ -80,7 +80,7 @@ describe('Load Playlist Controller', () => {
     })
 
     const httpRequest = {
-      param: {
+      query: {
         city_name: 'any_city'
       }
     }
@@ -89,18 +89,18 @@ describe('Load Playlist Controller', () => {
     expect(httpResponse.body).toEqual(new ServerError())
   })
 
-  test('should call MusicProvider with correct temperature param', async () => {
+  test('should call MusicProvider with correct temperature query', async () => {
     const { sut, musicProviderStub, weatherProviderStub } = makeSut()
     const loadSpy = jest.spyOn(musicProviderStub, 'load')
     const httpRequest = {
-      param: {
+      query: {
         city_name: 'any_city'
       }
     }
 
     await sut.handle(httpRequest)
 
-    const cityTemperature = await weatherProviderStub.load(httpRequest.param.city_name)
+    const cityTemperature = await weatherProviderStub.load(httpRequest.query.city_name)
 
     expect(loadSpy).toHaveBeenCalledWith(cityTemperature)
   })
@@ -112,7 +112,7 @@ describe('Load Playlist Controller', () => {
     })
 
     const httpRequest = {
-      param: {
+      query: {
         city_name: 'any_city'
       }
     }
