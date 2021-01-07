@@ -10,7 +10,11 @@ interface SutTypes {
 
 const makeWeatherProvider = (): WeatherProvider => {
   class WeatherProviderStub implements WeatherProvider {
-    async load (city: string): Promise<number> {
+    async loadUsingCity (city: string): Promise<number> {
+      return 1
+    }
+
+    async loadUsingGeographicalCoordinates (lat: string): Promise<number> {
       return 1
     }
   }
@@ -38,11 +42,24 @@ const makeSut = (): SutTypes => {
 }
 
 describe('Load Playlist Controller', () => {
-  test('should return 200 if valid data is provided', async () => {
+  test('should return 200 if a valid city data is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       query: {
-        city_name: 'any_city'
+        city: 'any_city'
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual(['any_music'])
+  })
+
+  test('should return 200 if a valid geographic coordinates are provided', async () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      query: {
+        lat: '123',
+        long: '456'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
@@ -58,15 +75,15 @@ describe('Load Playlist Controller', () => {
     }
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new MissingQueryError('city_name'))
+    expect(httpResponse.body).toEqual(new MissingQueryError())
   })
 
   test('should call WeatherProvider with correct city query', async () => {
     const { sut, weatherProviderStub } = makeSut()
-    const loadSpy = jest.spyOn(weatherProviderStub, 'load')
+    const loadSpy = jest.spyOn(weatherProviderStub, 'loadUsingCity')
     const httpRequest = {
       query: {
-        city_name: 'any_city'
+        city: 'any_city'
       }
     }
     await sut.handle(httpRequest)
@@ -75,13 +92,13 @@ describe('Load Playlist Controller', () => {
 
   test('should return 500 if WeatherProvider throws', async () => {
     const { sut, weatherProviderStub } = makeSut()
-    jest.spyOn(weatherProviderStub, 'load').mockImplementationOnce(async () => {
+    jest.spyOn(weatherProviderStub, 'loadUsingCity').mockImplementationOnce(async () => {
       return await new Promise((resolve, reject) => reject(new Error()))
     })
 
     const httpRequest = {
       query: {
-        city_name: 'any_city'
+        city: 'any_city'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
@@ -94,13 +111,13 @@ describe('Load Playlist Controller', () => {
     const loadSpy = jest.spyOn(musicProviderStub, 'load')
     const httpRequest = {
       query: {
-        city_name: 'any_city'
+        city: 'any_city'
       }
     }
 
     await sut.handle(httpRequest)
 
-    const cityTemperature = await weatherProviderStub.load(httpRequest.query.city_name)
+    const cityTemperature = await weatherProviderStub.loadUsingCity(httpRequest.query.city)
 
     expect(loadSpy).toHaveBeenCalledWith(cityTemperature)
   })
@@ -113,7 +130,7 @@ describe('Load Playlist Controller', () => {
 
     const httpRequest = {
       query: {
-        city_name: 'any_city'
+        city: 'any_city'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
