@@ -1,2 +1,2 @@
-export * from './missing-param-erro'
+export * from './missing-query-erro'
 export * from './server-error'

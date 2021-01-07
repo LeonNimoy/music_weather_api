@@ -6,4 +6,5 @@ export interface HttpResponse {
 export interface HttpRequest {
   param?: any
   body?: any
+  query?: any
 }
