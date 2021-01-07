@@ -26,8 +26,8 @@ export class LoadPlayListController implements Controller {
       }
 
       if (lat && long) {
-        const cityTemperature = await this.weatherProvider.loadUsingGeographicalCoordinates(lat, long)
-        const playlist = await this.musicProvider.load(cityTemperature)
+        const geographicalCoordinatesTemperature = await this.weatherProvider.loadUsingGeographicalCoordinates(lat, long)
+        const playlist = await this.musicProvider.load(geographicalCoordinatesTemperature)
         return ok(playlist)
       }
     } catch (error) {
