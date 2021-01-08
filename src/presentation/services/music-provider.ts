@@ -3,6 +3,6 @@ import { Playlist } from '../../domain/models/playlist'
 
 export class MusicProviderService implements LoadPlaylist {
   public async loadPlaylist (temperature: number): Promise<Playlist> {
-    return ['any_music']
+    if (temperature > 30) return ['party_song']
   }
 }
