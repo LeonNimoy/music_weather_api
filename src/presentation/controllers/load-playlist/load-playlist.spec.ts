@@ -1,11 +1,14 @@
 import { LoadPlayListController } from './load-playlist'
 import { MissingQueryError, ServerError } from '../../errors'
-import { WeatherProvider, MusicProvider } from './load-playlist-protocols'
+import { WeatherProvider } from './load-playlist-protocols'
+import { LoadPlaylist } from '../../../domain/usecases/load-playlist'
+import { Playlist } from '../../../domain/models/playlist'
+import { MusicProviderService } from '../../services/music-provider'
 
 interface SutTypes {
   sut: LoadPlayListController
   weatherProviderStub: WeatherProvider
-  musicProviderStub: MusicProvider
+  musicProviderServiceStub: MusicProviderService
 }
 
 const makeWeatherProvider = (): WeatherProvider => {
@@ -21,23 +24,25 @@ const makeWeatherProvider = (): WeatherProvider => {
   return new WeatherProviderStub()
 }
 
-const makeMusicProvider = (): MusicProvider => {
-  class MusicProviderStub implements MusicProvider {
-    async load (temperature: number): Promise<string[]> {
-      return ['any_music']
+const makeMusicProviderService = (): MusicProviderService => {
+  class MusicProviderServiceStub implements LoadPlaylist {
+    async loadPlaylist (temperature: number): Promise<Playlist> {
+      const playlist = ['any_music']
+
+      return playlist
     }
   }
-  return new MusicProviderStub()
+  return new MusicProviderServiceStub()
 }
 
 const makeSut = (): SutTypes => {
   const weatherProviderStub = makeWeatherProvider()
-  const musicProviderStub = makeMusicProvider()
-  const sut = new LoadPlayListController(weatherProviderStub, musicProviderStub)
+  const musicProviderServiceStub = makeMusicProviderService()
+  const sut = new LoadPlayListController(weatherProviderStub, musicProviderServiceStub)
   return {
     sut,
     weatherProviderStub,
-    musicProviderStub
+    musicProviderServiceStub
   }
 }
 
@@ -147,9 +152,9 @@ describe('Load Playlist Controller', () => {
     expect(httpResponse.body).toEqual(new ServerError())
   })
 
-  test('should call MusicProvider with correct temperature query', async () => {
-    const { sut, musicProviderStub, weatherProviderStub } = makeSut()
-    const loadSpy = jest.spyOn(musicProviderStub, 'load')
+  test('should call Music Provider Service with correct temperature query', async () => {
+    const { sut, musicProviderServiceStub, weatherProviderStub } = makeSut()
+    const loadSpy = jest.spyOn(musicProviderServiceStub, 'loadPlaylist')
     const httpRequest = {
       query: {
         city: 'any_city'
@@ -164,8 +169,8 @@ describe('Load Playlist Controller', () => {
   })
 
   test('should return 500 if MusicProvider throws', async () => {
-    const { sut, musicProviderStub } = makeSut()
-    jest.spyOn(musicProviderStub, 'load').mockImplementationOnce(async () => {
+    const { sut, musicProviderServiceStub } = makeSut()
+    jest.spyOn(musicProviderServiceStub, 'loadPlaylist').mockImplementationOnce(async () => {
       return await new Promise((resolve, reject) => reject(new Error()))
     })
 
