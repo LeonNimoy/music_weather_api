@@ -1,4 +1,3 @@
-// import { AxiosStatic } from 'axios'
 import { AxiosStatic } from 'axios'
 
 import env from '../../main/config/env'
