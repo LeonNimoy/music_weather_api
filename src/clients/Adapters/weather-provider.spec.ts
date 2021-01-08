@@ -4,7 +4,7 @@ import { WeatherProviderAdapter } from './weather-provider'
 
 describe('Weather Provider Adapter', () => {
   test('should return a temperature from Open Weather service, passing city name as param', async () => {
-    const city = 'London'
+    const city = 'any_city'
 
     jest.spyOn(axios, 'get').mockResolvedValue({
       data: {
