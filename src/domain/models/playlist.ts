@@ -1,7 +1,3 @@
-export type Playlist = {
-  music: MusicModel[]
-}
+export type Playlist = Music[]
 
-type MusicModel = {
-  name: string
-}
+type Music = string
