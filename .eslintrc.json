@@ -7,6 +7,8 @@
     "rules": {
             "@typescript-eslint/no-redeclare":"off",
             "@typescript-eslint/strict-boolean-expressions":"off",
-            "eslint-disable @typescript-eslint/naming-convention":"off"
+            "eslint-disable @typescript-eslint/naming-convention":"off",
+            "@typescript-eslint/no-use-before-define":"off",
+            "@typescript-eslint/consistent-type-definitions":"off"
     }
 }
