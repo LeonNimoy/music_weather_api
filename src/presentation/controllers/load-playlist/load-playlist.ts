@@ -1,14 +1,15 @@
-import { Controller, HttpRequest, HttpResponse, MusicProvider, WeatherProvider } from './load-playlist-protocols'
+import { Controller, HttpRequest, HttpResponse, WeatherProvider } from './load-playlist-protocols'
 import { MissingQueryError } from '../../errors'
 import { badRequest, serverError, ok } from '../../helpers/http-helper'
+import { MusicProviderService } from '../../services/music-provider'
 
 export class LoadPlayListController implements Controller {
   private readonly weatherProvider: WeatherProvider
-  private readonly musicProvider: MusicProvider
+  private readonly musicProviderService: MusicProviderService
 
-  constructor (weatherProvider: WeatherProvider, musicProvider: MusicProvider) {
+  constructor (weatherProvider: WeatherProvider, musicProvider: MusicProviderService) {
     this.weatherProvider = weatherProvider
-    this.musicProvider = musicProvider
+    this.musicProviderService = musicProvider
   }
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -21,13 +22,13 @@ export class LoadPlayListController implements Controller {
 
       if (city) {
         const cityTemperature = await this.weatherProvider.loadUsingCity(city)
-        const playlist = await this.musicProvider.load(cityTemperature)
+        const playlist = await this.musicProviderService.loadPlaylist(cityTemperature)
         return ok(playlist)
       }
 
       if (lat && long) {
         const geographicalCoordinatesTemperature = await this.weatherProvider.loadUsingGeographicalCoordinates(lat, long)
-        const playlist = await this.musicProvider.load(geographicalCoordinatesTemperature)
+        const playlist = await this.musicProviderService.loadPlaylist(geographicalCoordinatesTemperature)
         return ok(playlist)
       }
     } catch (error) {
