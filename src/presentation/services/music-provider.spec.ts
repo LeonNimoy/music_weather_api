@@ -57,4 +57,14 @@ describe('Music Provider Service', () => {
     await sut.loadPlaylist(temperature)
     expect(loadSpy).toHaveBeenCalledWith('rock')
   })
+
+  test('should call Music Provider passing Classical genre as param, if the temperature is below 10° Celsius', async () => {
+    const { musicProviderAdapterStub, sut } = makeSut()
+    const temperature = 9
+
+    const loadSpy = jest.spyOn(musicProviderAdapterStub, 'load')
+
+    await sut.loadPlaylist(temperature)
+    expect(loadSpy).toHaveBeenCalledWith('classical')
+  })
 })
