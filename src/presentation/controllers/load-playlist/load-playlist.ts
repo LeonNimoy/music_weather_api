@@ -7,9 +7,8 @@ export class LoadPlayListController implements Controller {
   private readonly weatherProvider: WeatherProvider
   private readonly musicProviderService: MusicProviderService
 
-  constructor (weatherProvider: WeatherProvider, musicProvider: MusicProviderService) {
+  constructor (weatherProvider: WeatherProvider) {
     this.weatherProvider = weatherProvider
-    this.musicProviderService = musicProvider
   }
 
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
