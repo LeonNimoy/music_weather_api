@@ -21,5 +21,10 @@ export class MusicProviderService implements LoadPlaylist {
       const playlist = await this.musicProvider.load('rock')
       return playlist
     }
+
+    if (temperature < 10) {
+      const playlist = await this.musicProvider.load('classical')
+      return playlist
+    }
   }
 }
