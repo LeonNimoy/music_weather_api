@@ -1,0 +1,6 @@
+{
+    "party": ["party_song1","party_song2","party_song3"],
+    "pop": ["pop_song1","pop_song2","pop_song3"],
+    "rock": ["rock_song1","rock_song2","rock_song3"],
+    "classical": ["classical_song1","classical_song2","classical_song3"]
+}
