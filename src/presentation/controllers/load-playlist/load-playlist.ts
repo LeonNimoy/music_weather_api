@@ -1,35 +1,41 @@
-import { Controller, HttpRequest, HttpResponse, WeatherProvider } from './load-playlist-protocols'
+import { Controller, HttpResponse, WeatherProvider } from './load-playlist-protocols'
 import { MissingQueryError } from '../../errors'
-import { badRequest, serverError, ok } from '../../helpers/http-helper'
-import { MusicProviderService } from '../../services/music-provider'
+import { serverError, badRequest, ok } from '../../helpers/http-helper'
+import { LoadPlaylist } from '../../../domain/usecases/load-playlist'
 
 export class LoadPlayListController implements Controller {
   private readonly weatherProvider: WeatherProvider
-  private readonly musicProviderService: MusicProviderService
+  private readonly musicProviderService: LoadPlaylist
 
-  constructor (weatherProvider: WeatherProvider) {
+  constructor (weatherProvider: WeatherProvider, musicProviderService: LoadPlaylist) {
     this.weatherProvider = weatherProvider
+    this.musicProviderService = musicProviderService
   }
 
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handleCity (city: string): Promise<HttpResponse> {
     try {
-      const { city, lat, long } = httpRequest.query
-
-      if (!city && !(lat && long)) {
+      if (!city) {
         return badRequest(new MissingQueryError())
       }
 
-      if (city) {
-        const cityTemperature = await this.weatherProvider.loadUsingCity(city)
-        const playlist = await this.musicProviderService.loadPlaylist(cityTemperature)
-        return ok(playlist)
+      const cityWeather = await this.weatherProvider.loadUsingCity(city)
+      const playlist = await this.musicProviderService.loadPlaylist(cityWeather)
+      return ok(playlist)
+    } catch (error) {
+      console.error(error)
+      return serverError()
+    }
+  }
+
+  async handleGeographicalCoordinates (lat: string, long: string): Promise<HttpResponse> {
+    try {
+      if (!lat && !long) {
+        return badRequest(new MissingQueryError())
       }
 
-      if (lat && long) {
-        const geographicalCoordinatesTemperature = await this.weatherProvider.loadUsingGeographicalCoordinates(lat, long)
-        const playlist = await this.musicProviderService.loadPlaylist(geographicalCoordinatesTemperature)
-        return ok(playlist)
-      }
+      const geographicalCoordinatesTemperature = await this.weatherProvider.loadUsingGeographicalCoordinates(lat, long)
+      const playlist = await this.musicProviderService.loadPlaylist(geographicalCoordinatesTemperature)
+      return ok(playlist)
     } catch (error) {
       console.error(error)
       return serverError()
