@@ -9,6 +9,8 @@
             "@typescript-eslint/strict-boolean-expressions":"off",
             "eslint-disable @typescript-eslint/naming-convention":"off",
             "@typescript-eslint/no-use-before-define":"off",
-            "@typescript-eslint/consistent-type-definitions":"off"
+            "@typescript-eslint/consistent-type-definitions":"off",
+            "@typescript-eslint/restrict-plus-operands":"off",
+            "@typescript-eslint/restrict-template-expressions":"off"
     }
 }
