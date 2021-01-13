@@ -1,9 +1,9 @@
 
-import { MusicProviderAdapterMock } from '../../../clients/Mocks/music-provider-adapter-mock'
+import { MusicProviderAdapter } from '../../../clients/Adapters/music-provider'
 import { MusicProviderService } from '../../../presentation/services/music-provider'
 
 export const makeMusicProviderService = (): MusicProviderService => {
-  const controller = new MusicProviderService(new MusicProviderAdapterMock())
+  const musicProviderService = new MusicProviderService(new MusicProviderAdapter())
 
-  return controller
+  return musicProviderService
 }

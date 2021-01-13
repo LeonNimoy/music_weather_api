@@ -16,7 +16,7 @@ export class MusicProviderService implements LoadPlaylist {
     } else if (temperature >= 10 && temperature <= 14) {
       const playlist = await this.musicProvider.load('rock')
       return playlist
-    } else {
+    } else if (temperature < 10) {
       const playlist = await this.musicProvider.load('classical')
       return playlist
     }

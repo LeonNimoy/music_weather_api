@@ -1,38 +1,29 @@
-import axios from 'axios'
 
 import { WeatherProviderAdapter } from './weather-provider'
 
 describe('Weather Provider Adapter', () => {
-  test('should return a temperature from Open Weather service, passing city name as param', async () => {
-    const city = 'any_city'
+  test('should return a success promise from Open Weather service, passing a city name as param', async () => {
+    const city = 'Moscou'
 
-    jest.spyOn(axios, 'get').mockResolvedValue({
-      data: {
-        main: {
-          temp: 12
-        }
-      }
-    })
+    const sut = new WeatherProviderAdapter()
 
-    const sut = new WeatherProviderAdapter(axios)
-    const temperature = await sut.loadUsingCity(city)
-    expect(temperature).toEqual(12)
+    const loadSpy = jest.spyOn(sut, 'loadUsingCity').mockResolvedValue(12)
+
+    await sut.loadUsingCity(city)
+
+    expect(loadSpy).toBeTruthy()
   })
 
-  test('should return a temperature from Open Weather service, passing geographical coordinates as param', async () => {
-    const lat = '123'
-    const long = '456'
+  test('should return a success promise from Open Weather service, passing geographical coordinates as param', async () => {
+    const lat = '-19.912998'
+    const long = '-43.940933'
 
-    jest.spyOn(axios, 'get').mockResolvedValue({
-      data: {
-        main: {
-          temp: 12
-        }
-      }
-    })
+    const sut = new WeatherProviderAdapter()
 
-    const sut = new WeatherProviderAdapter(axios)
-    const temperature = await sut.loadUsingGeographicalCoordinates(lat, long)
-    expect(temperature).toEqual(12)
+    const loadSpy = jest.spyOn(sut, 'loadUsingGeographicalCoordinates').mockResolvedValue(12)
+
+    await sut.loadUsingGeographicalCoordinates(lat, long)
+
+    expect(loadSpy).toBeTruthy()
   })
 })
