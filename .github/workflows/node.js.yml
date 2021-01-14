@@ -24,9 +24,6 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
-        node-version: ${{ matrix.node-version }}
-      env: 
-        OPEN_WEATHER_API_KEY: ${{ secrets.OPEN_WEATHER_API_KEY }} 
-        CREDENTIALS_BASE64_FORMAT: ${{ secrets.CREDENTIALS_BASE64_FORMAT }}      
+        node-version: ${{ matrix.node-version }}      
     - run: npm ci
     - run: npm test
