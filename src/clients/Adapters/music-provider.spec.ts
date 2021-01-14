@@ -6,7 +6,10 @@ describe('Music Provider Adapter', () => {
     const genre = 'rock'
     const sut = new MusicProviderAdapter()
 
-    const playlist = await sut.load(genre)
-    expect(playlist).toHaveProperty('items')
+    const loadSpy = jest.spyOn(sut, 'load').mockReturnValue(Promise.resolve(['any_son'])
+    )
+
+    await sut.load(genre)
+    expect(loadSpy).toBeTruthy()
   })
 })
