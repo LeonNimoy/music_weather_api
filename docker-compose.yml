@@ -5,11 +5,13 @@ services:
     build: .
     image: music-weather-api
     restart: always
-    command: npm start
+    command: npm run debug
     volumes: 
       - ./dist:/usr/workspace/src/music_weather_api/dist
+      - ./package.json:/usr/workspace/src/music_weather_api/package.json
     environment:
       OPEN_WEATHER_API_KEY: ${OPEN_WEATHER_API_KEY}  
       CREDENTIALS_BASE64_FORMAT: ${CREDENTIALS_BASE64_FORMAT}  
     ports: 
       - "3003:3003"
+      - "9222:9222"
