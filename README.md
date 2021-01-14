@@ -2,7 +2,7 @@
 
 Minha resposta ao Desafio Back End Big Bang.
 
-Esta API recebe o nome de uma cidade ou a coordenada geográfica de uma região, e retorna um lista de músicas. Conforme a temperatura local do ambiente informado.
+Esta API recebe o nome de uma cidade ou coordenadas geográficas de uma região, e retorna uma lista de músicas. Conforme a temperatura local do ambiente informado.
 
 
 ## Requisitos
@@ -15,7 +15,7 @@ Esta API recebe o nome de uma cidade ou a coordenada geográfica de uma região,
 
 1. Via URL
 
-    1.1 Por meio da URL https://music-weather-api-s.herokuapp.com, acesse a rota **playlist**. Passando o nome de uma cidade(city) ou coordenada geográfica(lat&long) como parâmetro:
+    1.1 Por meio da URL https://music-weather-api-s.herokuapp.com, acesse a rota **playlist**. Passando o nome de uma cidade(city) ou coordenadas geográficas(lat&long) como parâmetro:
 
     Exemplos:
 
@@ -24,13 +24,13 @@ Esta API recebe o nome de uma cidade ou a coordenada geográfica de uma região,
     https://music-weather-api-s.herokuapp.com/playlist?city=Londres
 
     ```
-    1.1.3 Caso busque por coordenadas geográfica:
+    1.1.3 Caso busque por coordenadas geográficas:
     ```
     https://music-weather-api-s.herokuapp.com/playlist?lat=35long=139
 
     ```
 
-    1.1.4 Caso a cidade possua um nome composto, utilizar o carácter "&" para representar o espaço entre as palavras.
+    1.1.4 Caso a cidade possua um nome composto, utilize o carácter "&" para representar o espaço entre as palavras.
 
     * Exemplo de uma playlist retornada com sucesso:
 
@@ -102,7 +102,7 @@ Esta API recebe o nome de uma cidade ou a coordenada geográfica de uma região,
 
     2.3 Crie uma conta no [Spotify](https://developer.spotify.com/dashboard/login), e cadastre a sua aplicação.
 
-    2.4 Clone o code fonte deste repositório, e acesse o diretório, na qual repositório foi baixado.
+    2.4 Clone o código fonte deste repositório, e acesse o diretório, na qual o repositório foi baixado.
 
     2.5 Instale as dependências deste projeto, por meio do comando:
     ```
@@ -113,7 +113,7 @@ Esta API recebe o nome de uma cidade ou a coordenada geográfica de uma região,
 
     2.7 Atribua o valor para a variável **OPEN_WEATHER_API_KEY** conforme API key fornecida pelo Open Weather ao criar a conta.
 
-    2.8 Para a variável **CREDENTIALS_BASE64_FORMAT**: converta o valor do seu clienteId e clienteSecrete, fornecido pelo Spotify, para o formato base64. Utilize qualquer encoder online formatar as credencias, Vide exemplo:[BASE64](https://www.base64encode.org/)
+    2.8 Para a variável **CREDENTIALS_BASE64_FORMAT**: converta o valor do seu clienteId e clienteSecrete, fornecido pelo Spotify, para o formato base64. Utilize qualquer encoder online para formatar as credencias, Vide exemplo:[BASE64](https://www.base64encode.org/)
 
     2.8.1 Certifique-se de converter as credencias no seguinte formato:
     ```
@@ -161,5 +161,4 @@ Esta API recebe o nome de uma cidade ou a coordenada geográfica de uma região,
     npm run dev
 
     ```
-
     3.4 Acesse o endereço informado no terminal e busque pelas playlists. Vide passo 1.1.2 - 1.1.3
