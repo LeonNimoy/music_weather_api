@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from 'express'
-import { AdapterControllerRoute } from '../adapters/express-route-adapter'
+import { RouteControllerAdapter } from '../adapters/route-controller-adapter'
 import { makeLoadPlaylistController } from '../factories/controllers/playlist-controller-factory'
 
-const adapterControllerRoute = new AdapterControllerRoute()
+const routeControllerAdapter = new RouteControllerAdapter()
 
 export default (router: Router): void => {
-  router.get('/', async (req, res) => {
-    await adapterControllerRoute.adapt(makeLoadPlaylistController(), req, res)
+  router.get('/playlist', async (req, res) => {
+    await routeControllerAdapter.adapt(makeLoadPlaylistController(), req, res)
   })
 }
