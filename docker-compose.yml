@@ -1,0 +1,15 @@
+version: "3"
+services: 
+  api:
+    container_name: music-weather-api
+    build: .
+    image: music-weather-api
+    restart: always
+    command: npm start
+    volumes: 
+      - ./dist:/usr/workspace/src/music_weather_api/dist
+    environment:
+      OPEN_WEATHER_API_KEY: ${OPEN_WEATHER_API_KEY}  
+      CREDENTIALS_BASE64_FORMAT: ${CREDENTIALS_BASE64_FORMAT}  
+    ports: 
+      - "3003:3003"
