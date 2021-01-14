@@ -16,19 +16,22 @@ export class MusicProviderAdapter implements MusicProvider {
         body: 'grant_type=client_credentials'
       })
 
-      const getSpotifyAccessTokenResponseData = await getSpotifyAccessToken.json()
-      const accessToken = getSpotifyAccessTokenResponseData.access_token
+      const getSpotifyAccessTokenResponse = await getSpotifyAccessToken.json()
 
-      const getSpotifyGenrePlaylists = await fetch(`https://api.spotify.com/v1/browse/categories/${playlistGenre}/playlists?limit=10`, {
+      const accessToken = getSpotifyAccessTokenResponse.access_token
+
+      const getSpotifyGenrePlaylists = await fetch(`https://api.spotify.com/v1/browse/categories/${playlistGenre}/playlists?limit=5`, {
         method: 'GET',
         headers: { Authorization: 'Bearer ' + accessToken }
       })
 
       const getSpotifyGenrePlaylistResponse = await getSpotifyGenrePlaylists.json()
 
-      const selectPlaylistNumber = Math.floor((Math.random() * 10) + 1)
+      const getSpotifyGenrePlaylistsQuantity = await getSpotifyGenrePlaylistResponse.playlists.items.length
 
-      const getSpotifyPlaylist = await fetch(`https://api.spotify.com/v1/playlists/${getSpotifyGenrePlaylistResponse.playlists.items[selectPlaylistNumber].id}/tracks?fields=items(track(name))&limit=10`, {
+      const selectSpotifyPlaylist = Math.floor(Math.random() * getSpotifyGenrePlaylistsQuantity)
+
+      const getSpotifyPlaylist = await fetch(`https://api.spotify.com/v1/playlists/${getSpotifyGenrePlaylistResponse.playlists.items[selectSpotifyPlaylist].id}/tracks?fields=items(track(name))&limit=10`, {
         method: 'GET',
         headers: { Authorization: 'Bearer ' + accessToken }
       })
